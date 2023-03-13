@@ -4,17 +4,20 @@ provider:
   name: aws
   runtime: nodejs12.x
   region: eu-west-1
-
-iAmRoleStatements:
-  - Effect: "Allow"
-    Action: "s3:ListBucket"
-    Resourse:
-          - "arn:aws:s3:::orlov-vitalii-import"
-  - Effect: "Allow"
-    Action:
-          - "s3:*"
-    Resourse:
-          - "arn:aws:s3:::orlov-vitalii-import"
+  iam:
+    role:
+      statements:
+        # Allow functions to list all buckets
+        - Effect: Allow
+          Action: 's3:ListBucket'
+          Resource: '*'
+        # Allow functions to read/write objects in a bucket
+        - Effect: Allow
+          Action:
+            - 's3:GetObject'
+            - 's3:PutObject'
+          Resource:
+            - 'arn:aws:s3:::orlov-vitalii-import/*'
 
 functions:
   importProductsFile:
