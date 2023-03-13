@@ -1,0 +1,38 @@
+service: import-service
+
+provider: 
+  name: aws
+  runtime: nodejs12.x
+  region: eu-west-1
+
+iAmRoleStatements:
+  - Effect: "Allow"
+    Action: "s3:ListBucket"
+    Resourse:
+          - "arn:aws:s3:::orlov-vitalii-import"
+  - Effect: "Allow"
+    Action:
+          - "s3:*"
+    Resourse:
+          - "arn:aws:s3:::orlov-vitalii-import"
+
+functions:
+  importProductsFile:
+    handler: handler.importProductsFile
+    events:
+      - http:
+          path: import
+          method: get
+          request:
+            parameters:
+              querystrings:
+                name: true
+  importFileParser:
+    handler: handler.importFileParser
+    events:
+    - s3:
+        bucket: orlov-vitalii-import
+        event: s3:ObjectCreated:*
+        rules:
+          - prefix: uploaded/
+        existing: true
