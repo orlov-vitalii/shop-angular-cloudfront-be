@@ -18,6 +18,22 @@ provider:
             - 's3:PutObject'
           Resource:
             - 'arn:aws:s3:::orlov-vitalii-import/*'
+        - Effect: Allow
+          Action:
+            - 'sqs:SendMessage'
+          Resource:
+            - 'arn:aws:sqs:eu-west-1:475340852272:catalogItemsQueue'
+
+  environment:
+    SQS_URL:
+      Ref: SQSQueue
+  
+resources:
+  Resources:
+    SQSQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: catalogItemsQueue
 
 functions:
   importProductsFile:
